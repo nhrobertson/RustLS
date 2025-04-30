@@ -1,3 +1,5 @@
-fn main() {
-    println!("Hello, world!");
+use ls;
+
+fn main() -> std::io::Result<()> {
+	ls::run()
 }
