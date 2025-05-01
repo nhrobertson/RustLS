@@ -1,6 +1,8 @@
 use std::env;
 use std::fs;
 use std::path::PathBuf;
+use colored::Colorize;
+use colored::ColoredString;
 
 
 pub fn run() -> std::io::Result<()> {
@@ -26,13 +28,27 @@ pub fn run() -> std::io::Result<()> {
 			let disp = path.to_str().unwrap();
 			println!("-------{disp}-------");
 		}
-		let current_dir = fs::read_dir(path)?;
-		for entry in current_dir {
+		let dir = fs::read_dir(path)?;
+		for entry in dir {
 			let entry = entry?;
 			let path = entry.path();
-			println!("{}" ,path.display())
+			//Implement Stylization for path
+			let a_str = style_output(&path);
+			print!("{}   " , a_str);
 		}
 		println!("");
 	}
 	Ok(())
+}
+
+fn style_output(path: &PathBuf) -> ColoredString {
+	let path_str = path.to_str().unwrap();
+	let md = fs::metadata(path_str).unwrap();
+	let name = path.file_name().unwrap().to_str().unwrap();
+	if md.is_dir() {
+		name.green().bold()
+	}
+	else {
+		name.cyan()
+	}
 }
